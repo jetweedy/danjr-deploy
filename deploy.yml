@@ -7,6 +7,24 @@
     app_dir: /home/ubuntu/danjr
     repo_url: https://github.com/jetweedy/danjr-backend.git  # <-- update this!
 
+
+  pre_tasks:
+    - name: Build React frontend locally
+      delegate_to: localhost
+      become: false
+      shell: |
+        cd ../danjr-frontend
+        npm install
+        npm run build
+
+    - name: Copy React build into deploy folder
+      delegate_to: localhost
+      become: false
+      shell: |
+        rm -rf react/build
+        cp -r ../danjr-frontend/build react/
+
+
   tasks:
     - name: Update apt and install required packages
       apt:
