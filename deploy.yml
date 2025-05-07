@@ -34,6 +34,39 @@
         requirements: "{{ app_dir }}/requirements.txt"
         virtualenv: "{{ app_dir }}/venv"
 
+    - name: Run Django migrations
+      command: "{{ app_dir }}/venv/bin/python manage.py migrate"
+      args:
+        chdir: "{{ app_dir }}"
+
+    - name: Check if db.sqlite3 exists
+      stat:
+        path: "{{ app_dir }}/db.sqlite3"
+      register: dbfile
+
+    - name: Ensure correct permissions on db.sqlite3
+      file:
+        path: "{{ app_dir }}/db.sqlite3"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0664'
+      when: dbfile.stat.exists
+
+    - name: Ensure correct permissions on project directory
+      file:
+        path: "{{ app_dir }}"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0755'
+
+    - name: Upload .env file
+      copy:
+        src: .env
+        dest: "{{ app_dir }}/.env"
+        owner: ubuntu
+        group: ubuntu
+        mode: '0600'
+
     - name: Copy systemd service file
       template:
         src: danjr-backend.service.j2
@@ -45,6 +78,9 @@
         name: danjr-backend
         enabled: yes
         state: started
+
+
+
 
   handlers:
     - name: Restart danjr backend
