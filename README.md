@@ -18,14 +18,14 @@ On EC2, create an Ubuntu instance with about 16GB storage. Make sure SSH and HTT
 Generate an RSA pem key pair when doing so, save the key it offers you, and then move it to a place in WSL that you can access it later:
 
 ```
-cp /mnt/c/............./danjr.pem ~/
+cp /mnt/c/Users/....../danjr.pem ~/
 chmod 400 ~/danjr.pem
 ```
 
 Enter this danjr-deploy folder within the WSL environment (will require replacing some of the code below with your own directory route):
 
 ```
-cd /mnt/c/....../danjr/danjr-deploy/
+cd /mnt/c/Users/....../danjr/danjr-deploy/
 ansible -i inventory.ini danjr -m ping
 ```
 
