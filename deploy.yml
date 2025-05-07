@@ -79,6 +79,42 @@
         enabled: yes
         state: started
 
+    - name: Upload React NGINX config
+      template:
+        src: templates/react.nginx.j2
+        dest: /etc/nginx/sites-available/react
+      notify: Reload nginx
+
+    - name: Ensure /var/www/react exists
+      file:
+        path: /var/www/react
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Copy React build to /var/www/react
+      copy:
+        src: react/build/
+        dest: /var/www/react/
+        owner: www-data
+        group: www-data
+        mode: '0644'
+      notify: Reload nginx
+
+    - name: Enable NGINX site for React
+      file:
+        src: /etc/nginx/sites-available/react
+        dest: /etc/nginx/sites-enabled/react
+        state: link
+      notify: Reload nginx
+
+    - name: Generate HTTPS cert for React site
+      command: >
+        certbot --nginx -n --redirect --agree-tos
+        --email jetweedy@gmail.com
+        -d danjrstack.com -d www.danjrstack.com
+      notify: Reload nginx
 
 
 
@@ -87,3 +123,8 @@
       systemd:
         name: danjr-backend
         state: restarted
+
+    - name: Reload nginx
+      systemd:
+        name: nginx
+        state: reloaded
