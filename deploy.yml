@@ -1,0 +1,35 @@
+---
+- name: Deploy DANJR Backend
+  hosts: danjr
+  become: yes
+
+  vars:
+    app_dir: /home/ubuntu/danjr
+    repo_url: https://github.com/jetweedy/danjr-backend.git  # <-- update this!
+
+  tasks:
+    - name: Update apt and install required packages
+      apt:
+        name:
+          - git
+          - python3-pip
+          - python3-venv
+        update_cache: yes
+
+    - name: Clone the DANJR repo
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ app_dir }}"
+        version: main
+        force: yes
+
+    - name: Set up Python virtual environment
+      args:
+        chdir: "{{ app_dir }}"
+        creates: "venv"
+      command: python3 -m venv venv
+
+    - name: Install Python dependencies
+      pip:
+        requirements: "{{ app_dir }}/requirements.txt"
+        virtualenv: "{{ app_dir }}/venv"
