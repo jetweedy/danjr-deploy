@@ -29,6 +29,11 @@ cd /mnt/c/Users/....../danjr/danjr-deploy/
 ansible -i inventory.ini danjr -m ping
 ```
 
+Build and Deploy to AWS:
+```
+npm run build
+ansible-playbook -i inventory.ini deploy.yml
+```
 
 
 ## SSH into AWS EC2 Ubuntu Instance:
