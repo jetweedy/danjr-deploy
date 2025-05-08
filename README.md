@@ -40,5 +40,7 @@ ansible-playbook -i inventory.ini deploy.yml
 
 ```
 ssh -i ~/danjr-key.pem ubuntu@ec2-3-143-205-139.us-east-2.compute.amazonaws.com
+python manage.py migrate
+python manage.py createsuperuser
 ```
 
