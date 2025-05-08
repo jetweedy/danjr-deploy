@@ -40,7 +40,35 @@ ansible-playbook -i inventory.ini deploy.yml
 
 ```
 ssh -i ~/danjr-key.pem ubuntu@ec2-3-143-205-139.us-east-2.compute.amazonaws.com
+cd danjr
+source venv/bin/activate
 python manage.py migrate
 python manage.py createsuperuser
 ```
 
+
+## Install Jenkins
+
+In WSL:
+
+```
+sudo apt update
+
+sudo apt install -y openjdk-17-jdk curl gnupg2 git
+
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee \
+  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+  https://pkg.jenkins.io/debian-stable binary/" | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+
+sudo apt update
+
+sudo apt install -y jenkins
+
+sudo service jenkins start
+
+sudo service jenkins status
+
+```
